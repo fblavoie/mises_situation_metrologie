@@ -1,0 +1,151 @@
+<html charset="utf-8" >
+
+	<head>
+		
+		<script
+		  src="https://code.jquery.com/jquery-3.7.1.min.js"
+		  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		  crossorigin="anonymous">
+		</script>
+		<script		src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		
+		<style>
+			.btn:hover{
+				cursor:pointer;
+			}
+		</style>
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			
+			<div id="main" style="float:left;" >
+				<img src="img/reservoir1.PNG" />
+			</div>
+			<div id="blue" style="position:absolute;z-index:5;width:280px;height:45px;top:465px;left:265px;background-color:#30a3c9">
+			</div>
+			<div style="position:absolute;left:0px;top:0px;z-index:10;">
+				<img src="img/reservoir1_thermocouple.PNG" />
+			</div>
+			<div style="position:absolute;left:28px;top:108px;z-index:500;">
+				<img onclick="mod_1()" class="btn" id="levier_in" style="width:250px;height:auto;transform:rotate(90deg)" src="img/levier.png" >
+			</div>
+			<div style="position:absolute;left:522px;top:402px;z-index:500;">
+				<img onclick="mod_2()" class="btn" id="levier_out" style="width:250px;height:auto;transform:rotate(-90deg)" src="img/levier.png" >
+			</div>
+			<div style="float:left;width:600px;" id="plotlycontainer">
+				
+			</div>
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		var water_level = 0;
+		var l_in = false;
+		var l_out = false;
+		
+		// Modify level
+		setInterval(function () {
+			
+			// Change water level
+			if(l_in){
+				water_level = water_level + 1;
+			}
+			if(l_out){
+				water_level = water_level - 1;
+			}
+			if(water_level < 0){
+				water_level = 0;
+			}
+			if(water_level > 395){
+				water_level = 395;
+			}
+			
+			$("#blue").css("height",(45+water_level)+"px");
+			$("#blue").css("top",(465-water_level)+"px")
+			
+		}, 100);
+		
+		
+		// 
+		function mod_1(){
+			if(l_in){
+				l_in = false;
+				$("#levier_in").css("transform","rotate(90deg)")
+			}
+			else{
+				l_in = true;
+				$("#levier_in").css("transform","rotate(0deg)")
+			}
+		}
+		
+		function mod_2(){
+			if(l_out){
+				l_out = false;
+				$("#levier_out").css("transform","rotate(-90deg)")
+			}
+			else{
+				l_out = true;
+				$("#levier_out").css("transform","rotate(0deg)")
+			}
+		}
+		
+		
+		air_temp = 23
+		water_temp = 60
+		current_thermo_temp = 23
+
+
+		var y = []
+
+		// New temperature each second
+		setInterval(function () {
+			if(water_level < 152){
+				current_thermo_temp = current_thermo_temp + (air_temp-current_thermo_temp)*0.08
+			}
+			else if(water_level >= 152){
+				current_thermo_temp = current_thermo_temp + (water_temp-current_thermo_temp)*0.25
+			}
+			
+			thermo_bruit = current_thermo_temp + Math.random() - 0.5;
+			thermo_bruit = Math.round(thermo_bruit * 10) / 10
+			
+			y.push(thermo_bruit);
+			
+			if(y.length>100){
+				y = y.slice(1,101);
+			}
+			
+			trace1 = {
+			  y: y,
+			  type: 'line',
+			  mode: "line"
+			};
+			
+			data = [trace1];
+			
+			var layout = {
+			  yaxis: {
+				title: 'Température (degrés Celsius)',
+				range:[10, 75]
+			  },
+			  xaxis: {
+				title: 'Temps',
+				range: [0, 100],
+			  }
+			};
+			
+			Plotly.newPlot('plotlycontainer', data, layout);
+			
+		}, 1000);
+		
+		
+		
+	</script>
+
+</html>

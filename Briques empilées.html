@@ -1,0 +1,98 @@
+<html charset="utf-8" >
+
+	<head>
+		
+		<script
+		  src="https://code.jquery.com/jquery-3.7.1.min.js"
+		  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		  crossorigin="anonymous">
+		</script>
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+		<div id="main" style="width:1280px;height:720px;background:url('img/Diapositive1.PNG')">
+		
+			<button style="position:absolute;top:30px;left:890px;font-size:120%;" onclick="mod(-1)">RETIRER UNE BRIQUE</button>
+			<button style="position:absolute;top:70px;left:890px;font-size:120%;" onclick="mod(1)">AJOUTER UNE BRIQUE</button>
+
+			<div id="initial_line" style="position:absolute;top:65px;left:130px;width:460px;height:10px;background-color:#4472C4;"></div>
+			
+			<div id="curve_line_1" style="position:absolute;top:65px;left:130px;width:460px;height:70px;display:none;">
+				<img src="img/curve.png" style="width:100%;height:100%;">
+			</div>
+			
+			<div id="bricks" style="position:absolute;top:85px;left:320px;height:50px;width:100px;background:url('img/block.png');background-size:repeat;display:none;">
+				
+			</div>
+
+		</div>
+		<div id="final" style="width:1280px;height:720px;background:url('img/Diapositive2.PNG');display:none;">
+		
+		</div>
+	</body>
+	
+	<script>
+		var nb_bricks = 0
+		var bias = 0
+		var working = true;
+		
+		function mod(nb){
+		
+			if(working){
+			
+				nb_bricks = nb_bricks + nb;
+				if(nb_bricks<0){
+					nb_bricks = 0
+				}
+
+				console.log(nb_bricks);
+
+				
+				// Modify visual
+				if(nb_bricks == 17){
+					$("#main").hide();
+					$("#final").show();
+					$("#curve_line_1").hide();
+					$("#bricks").hide();
+				}
+				else if((nb_bricks == 0) && (bias==0)){
+					$("#initial_line").show();
+					$("#curve_line_1").hide();
+					$("#bricks").hide();
+				}
+				else{
+					$("#initial_line").hide();
+					
+					basis = nb_bricks*30 + Math.random()*4 - 2;
+					
+					if(nb_bricks>=14){
+						bias = 50;
+					}
+					
+					if(nb_bricks >= 11){
+						diff = nb_bricks - 11;
+						diff = diff*diff
+						basis = basis + diff*3
+					}
+					
+					curve_height = Math.floor(basis+bias);
+					$("#curve_line_1").css("height",curve_height+"px");
+					
+					brick_height = 25*nb_bricks ;
+					$("#bricks").css("height",brick_height+"px");
+					brick_beginning = 65 + curve_height - brick_height - nb_bricks  ;
+					$("#bricks").css("top",(brick_beginning)+"px");
+					
+					$("#curve_line_1").show();
+					$("#bricks").show();
+				}
+
+			}
+			
+			
+		
+		}
+	</script>
+
+</html>

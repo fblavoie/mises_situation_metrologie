@@ -1,0 +1,143 @@
+<html charset="utf-8" >
+
+	<head>
+		
+		<script
+		  src="https://code.jquery.com/jquery-3.7.1.min.js"
+		  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		  crossorigin="anonymous">
+		</script>
+		<script		
+			src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		<link href="https://code.jquery.com/ui/1.8.18/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+		<script src="https://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+
+		<style>
+		
+			.btn:hover{
+				cursor:pointer;
+			}
+			
+			.box_wrapper {    
+				position:absolute;
+				right:25px;
+				left: 25px;
+				top: 25px;
+				bottom: 25px; /*200*/
+				overflow-y: hidden; /* Hide vertical scrollbar */
+				overflow-x: hidden; /* Hide horizontal scrollbar */
+				border:2px solid red;
+				z-index:750;
+			}
+			.layers_group {
+			   position: relative;   
+			}
+			.layer {    
+				background-color: green;
+				width: 100%; 
+				height: 100px; 
+				top: 20px; 
+				left: 0px;
+				cursor:move;
+			}
+
+			/* Jquery to add hangles i think */
+			.ui-resizable { position: absolute;}
+			.ui-resizable-handle { position: absolute;font-size: 0.1px; display: block;  }
+			.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle { display: none; }
+			.ui-resizable-n { cursor: n-resize; height: 7px; width: 100%; top: -5px; left: 0; }
+			.ui-resizable-s { cursor: s-resize; height: 7px; width: 100%; bottom: -5px; left: 0; }
+			.ui-resizable-e { cursor: e-resize; width: 7px; right: -5px; top: 0; height: 100%; }
+			.ui-resizable-w { cursor: w-resize; width: 7px; left: -5px; top: 0; height: 100%; }
+			.ui-resizable-se { cursor: se-resize; width: 12px; height: 12px; right: 1px; bottom: 1px; background:url(images/corner.gif); }
+			.ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
+			.ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
+			.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px; }
+			
+		</style>
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			<div id="main" style="width:872px;height:691px;background:url('img/tuyau.PNG');float:left;">
+				<img id="nut_zero" src="img/nut.png" style="width:65px;height:auto;position:absolute;top:360px;left:440px;"/>
+				<img class="btn" onclick="mod(0,1)" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:505px;"/>
+				<img class="btn" onclick="mod(0,-1)" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:410px;-webkit-transform: scaleX(-1);transform: scaleX(-1);"/>
+				
+				<img id="nut_span" src="img/nut.png" style="width:65px;height:auto;position:absolute;top:360px;left:580px;"/>
+				<img class="btn" onclick="mod(1,1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:645px;"/>
+				<img class="btn" onclick="mod(1,-1)" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:550px;-webkit-transform: scaleX(-1);transform: scaleX(-1);"/>
+			</div>
+			<div style="float:left;width:600px;" id="plotlycontainer">
+				
+			</div>
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		var zero = 0;
+		var span = 0;
+	
+		
+	
+		function mod(element,diff){
+			if(element == 0){
+				zero = zero + diff;
+			}
+			else if (element == 1){
+				span = span + diff;
+			}
+			
+			$("#nut_zero").css("transform","rotate("+(5*zero)+"deg)");
+			$("#nut_span").css("transform","rotate("+(5*span)+"deg)");
+			
+			a = (span+50)*.01
+			b = (zero-20)*.1
+			
+			x = [];
+			y = [];
+			
+			for(i=0;i<=150;i++){
+				x.push(i);
+				t = a*i + b;
+				if(t<0){
+					t = 0;
+				}
+				y.push(t)
+			}
+			
+			trace1 = {
+			  x: y,
+			  y: x,
+			  type: 'scatter'
+			};
+			
+			data = [trace1];
+			
+			var layout = {
+			  yaxis: {
+				title: 'Pression (psi)',
+				range:[0,150]
+			  },
+			  xaxis: {
+				title: 'Intensité (mA)',
+				range: [0, 30],
+				tickvals: [0,4,8,12,16,20,24,28]
+			  }
+			};
+
+			
+			Plotly.newPlot('plotlycontainer', data, layout);
+			
+		}
+		
+		mod(0,0);
+	
+	</script>
+
+</html>

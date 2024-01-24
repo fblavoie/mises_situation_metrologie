@@ -30,7 +30,7 @@
 			</div>
 			
 			<div style="position:absolute;top:150px;left:700px;font-size:40px;">
-				<span id="meter">0</span> cm
+				Distance d'affaissement = <b><span id="meter">0</span></b> cm
 			</div>
 			
 			<div style="position:absolute;top:220px;left:700px;width:550px;height:400px;background-color:red;" id="plotlycontainer">
@@ -111,12 +111,15 @@
 		
 			if(working){
 			
+				update_graphb = true;
 				nb_bricks = nb_bricks + nb;
 				if(nb_bricks<0){
 					nb_bricks = 0
+					update_graphb = false;
 				}
 				if(nb_bricks>15){
 					nb_bricks = 15;
+					update_graphb = false;
 				}
 
 
@@ -201,7 +204,9 @@
 				
 				$("#meter").html(Math.round(curve_height * 100) / 100);
 				
-				update_graph();
+				if(update_graphb){
+					update_graph();
+				}
 
 			}
 		

@@ -1,0 +1,206 @@
+<html charset="utf-8" >
+
+	<head>
+		
+		<script
+		  src="https://code.jquery.com/jquery-3.7.1.min.js"
+		  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		  crossorigin="anonymous">
+		</script>
+		<script		src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		
+		
+		<style>
+			.btn:hover{
+				cursor:pointer;
+			}
+			
+			
+			.slidecontainer {
+			  width: 100%; /* Width of the outside container */
+			}
+
+			/* The slider itself */
+			.slider {
+			  -webkit-appearance: none;  /* Override default CSS styles */
+			  appearance: none;
+			  width: 100%; /* Full-width */
+			  height: 25px; /* Specified height */
+			  background: #d3d3d3; /* Grey background */
+			  outline: none; /* Remove outline */
+			  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+			  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+			  transition: opacity .2s;
+			}
+
+			/* Mouse-over effects */
+			.slider:hover {
+			  opacity: 1; /* Fully shown on mouse-over */
+			}
+
+			/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+			.slider::-webkit-slider-thumb {
+			  -webkit-appearance: none; /* Override default look */
+			  appearance: none;
+			  width: 25px; /* Set a specific slider handle width */
+			  height: 25px; /* Slider handle height */
+			  background: #04AA6D; /* Green background */
+			  cursor: pointer; /* Cursor on hover */
+			}
+
+			.slider::-moz-range-thumb {
+			  width: 25px; /* Set a specific slider handle width */
+			  height: 25px; /* Slider handle height */
+			  background: #04AA6D; /* Green background */
+			  cursor: pointer; /* Cursor on hover */
+			}
+			
+		</style>
+	
+	
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			
+			<div id="main" style="float:left;" >
+				<img src="img/reservoir2.png" />
+			</div>
+			
+			<div id="blue" style="position:absolute;z-index:5;width:323px;height:45px;top:495px;left:393px;background-color:#c1d4d4">
+			</div>
+
+			<div style="position:absolute;left:140px;top:140px;z-index:500;">
+				<img onclick="mod_1()" class="btn" id="levier_in" style="width:250px;height:auto;transform:rotate(90deg)" src="img/levier.png" >
+			</div>
+			<div style="position:absolute;left:713px;top:535px;z-index:500;">
+				<img onclick="mod_2()" class="btn" id="levier_out" style="width:250px;height:auto;transform:rotate(-90deg)" src="img/levier.png" >
+			</div>
+			
+			<div style="position:absolute;z-index:600;left:1200px;width:400px;top:100px;" class="slidecontainer">
+				<p>ZÉRO</p>
+			    <input type="range" min="1" max="1000" value="500" class="slider" id="zero">
+			</div>
+			<div style="position:absolute;z-index:600;left:1200px;width:400px;top:220px;" class="slidecontainer">
+				<p>SPAN</p>
+			    <input type="range" min="1" max="1000" value="500" class="slider" id="span">
+			</div>
+			
+			<div style="position:absolute;z-index:600;left:1175px;width:400px;top:470px;font-size:50px;" id="reading">
+
+			</div>
+			
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		var min_water_level = 92;
+		var water_level = 0;
+		var l_in = false;
+		var l_out = false;
+		
+		choice = 1
+		choice = parseInt(window.location.search.split("=")[1])
+		if (choice==1){
+			var problem_level = 1.3; // 40 inH2O
+		}
+		if (choice==2){
+			var problem_level = .58; // 5 kPa
+		}
+		if (choice==3){
+			var problem_level = .78; // 1 psi
+		}
+		console.log(problem_level);
+		
+		
+		// Modify level
+		setInterval(function () {
+			
+			// Change water level
+			if(l_in){
+				water_level = water_level + 1;
+			}
+			if(l_out){
+				water_level = water_level - 1;
+			}
+			if(water_level < 0){
+				water_level = 0;
+			}
+			if(water_level > 395){
+				water_level = 395;
+			}
+			
+			$("#blue").css("height",(0+water_level)+"px");
+			$("#blue").css("top",(541+45-water_level)+"px")
+			
+			
+			
+			// Calculate signal ========================================
+			
+			if( water_level < min_water_level ){
+				s  = 0;
+			}
+			else{
+				s  =  (water_level-min_water_level)/(395-min_water_level);
+			}
+			
+			
+			// Non-linear signal if over limit
+			if(s >= problem_level){
+				add = Math.pow(((s-problem_level)*100),1.05)/100
+				s = s + add;
+			}
+			
+			zero = ($("#zero").val()/1000+ 0.1*($("#span").val()/1000-0.5)) * 10;
+			span = ($("#span").val()/1000 ) * 30 * s;
+			mA = zero+span;
+			
+			mA = Math.round(mA * 100) / 100
+
+			
+			
+			$("#reading").html( mA + " mA" );
+			
+			
+
+		}, 100);
+		
+		
+		// 
+		function mod_1(){
+			if(l_in){
+				l_in = false;
+				$("#levier_in").css("transform","rotate(90deg)")
+			}
+			else{
+				l_in = true;
+				$("#levier_in").css("transform","rotate(0deg)")
+			}
+		}
+		
+		function mod_2(){
+			if(l_out){
+				l_out = false;
+				$("#levier_out").css("transform","rotate(-90deg)")
+			}
+			else{
+				l_out = true;
+				$("#levier_out").css("transform","rotate(0deg)")
+			}
+		}
+		
+		
+		var y = []
+
+
+		
+		
+		
+	</script>
+
+</html>

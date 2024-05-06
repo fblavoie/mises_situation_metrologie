@@ -29,6 +29,8 @@
 			
 			<script>
 				var dir_pressure = 0;
+				var dir_nut1 = 0;
+				var dir_nut0 = 0;
 			</script>
 			
 			
@@ -106,7 +108,7 @@
 			$("#nut_span").css("transform","rotate("+(5*span)+"deg)");
 			
 			a = (span+50)*.005
-			b = (zero-20)*.1
+			b = (zero-20)*.1 + a*6
 			
 			z = Math.pow(current_pressure,1)
 			

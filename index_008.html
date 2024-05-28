@@ -1,0 +1,297 @@
+
+<!-- saved from url=(0069)https://francisblavoie.github.io/mises_situation_metrologie/s008.html -->
+<html charset="utf-8"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<script
+		  src="https://code.jquery.com/jquery-3.7.1.min.js"
+		  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		  crossorigin="anonymous">
+		</script>
+		<script		src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		<script src="fili.min.js"></script>
+
+		
+		<style>
+			.btn:hover{
+				cursor:pointer;
+			}
+			
+			table, th, td {
+			  border: 1px solid;
+			}
+
+		</style>
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+	
+		<div style="position: absolute;z-index:999;width:150px;height:20px;background:yellow;top:0;left:0" class="btn" id="topbtn" onclick="topbtn();">DONNÉES</div>
+			
+		<div style="width:100%;" id="principal">
+			<div id="main" style="float:left;">
+				<img src="./index_008_files/reservoir1.png">
+			</div>
+			<div id="blue" style="position: absolute; z-index: 5; width: 280px; height: 71px; top: 439px; left: 265px; background-color: rgb(48, 163, 201);">
+			</div>
+			<div style="position:absolute;left:0px;top:0px;z-index:10;">
+				<img src="./index_008_files/reservoir1_thermocouple.png">
+			</div>
+			<div style="position:absolute;left:28px;top:108px;z-index:500;">
+				<img onclick="mod_1()" class="btn" id="levier_in" style="width: 250px; height: auto; transform: rotate(90deg);" src="./index_008_files/levier.png">
+			</div>
+			<div style="position:absolute;left:522px;top:402px;z-index:500;">
+				<img onclick="mod_2()" class="btn" id="levier_out" style="width:250px;height:auto;transform:rotate(-90deg)" src="./index_008_files/levier.png">
+			</div>
+			<div style="float:left;width:600px;" id="plotlycontainer" class="js-plotly-plot">
+				
+			<div class="plot-container plotly"><div class="svg-container" style="position: relative; width: 600px; height: 450px;"><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="450" style="background: rgb(255, 255, 255);"><defs id="defs-2c2b08"><g class="clips"><clippath class="plotclip" id="clip2c2b08xyplot"><rect width="440" height="270"></rect></clippath><clippath class="axesclip" id="clip2c2b08x"><rect x="80" y="0" width="440" height="450"></rect></clippath><clippath class="axesclip" id="clip2c2b08y"><rect x="0" y="100" width="600" height="270"></rect></clippath><clippath class="axesclip" id="clip2c2b08xy"><rect x="80" y="100" width="440" height="270"></rect></clippath></g><g class="gradients"></g></defs><g class="bglayer"><rect class="bg" x="80" y="100" width="440" height="270" style="fill: rgb(255, 255, 255); fill-opacity: 1; stroke-width: 0;"></rect></g><g class="draglayer"><g class="xy"><rect class="drag nsewdrag cursor-crosshair" data-subplot="xy" x="80" y="100" width="440" height="270" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag nwdrag cursor-nw-resize" data-subplot="xy" x="60" y="80" width="20" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag nedrag cursor-ne-resize" data-subplot="xy" x="520" y="80" width="20" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag swdrag cursor-sw-resize" data-subplot="xy" x="60" y="370" width="20" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag sedrag cursor-se-resize" data-subplot="xy" x="520" y="370" width="20" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag ewdrag cursor-ew-resize" data-subplot="xy" x="124" y="370.5" width="352" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag wdrag cursor-w-resize" data-subplot="xy" x="80" y="370.5" width="44" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag edrag cursor-e-resize" data-subplot="xy" x="476" y="370.5" width="44" height="20" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag nsdrag cursor-ns-resize" data-subplot="xy" x="59.5" y="127" width="20" height="216" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag sdrag cursor-s-resize" data-subplot="xy" x="59.5" y="343" width="20" height="27" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect><rect class="drag ndrag cursor-n-resize" data-subplot="xy" x="59.5" y="100" width="20" height="27" style="fill: transparent; stroke-width: 0; pointer-events: all;"></rect></g></g><g class="layer-below"><g class="imagelayer"></g><g class="shapelayer"></g></g><g class="cartesianlayer"><g class="subplot xy"><g class="layer-subplot"><g class="shapelayer"></g><g class="imagelayer"></g></g><g class="gridlayer"><g class="x"><path class="xgrid crisp" d="M0,100v270" transform="translate(168,0)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="xgrid crisp" d="M0,100v270" transform="translate(256,0)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="xgrid crisp" d="M0,100v270" transform="translate(344,0)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="xgrid crisp" d="M0,100v270" transform="translate(432,0)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path></g><g class="y"><path class="ygrid crisp" d="M80,0h440" transform="translate(0,328.46000000000004)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="ygrid crisp" d="M80,0h440" transform="translate(0,286.91999999999996)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="ygrid crisp" d="M80,0h440" transform="translate(0,245.38)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="ygrid crisp" d="M80,0h440" transform="translate(0,203.85)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="ygrid crisp" d="M80,0h440" transform="translate(0,162.31)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path><path class="ygrid crisp" d="M80,0h440" transform="translate(0,120.77)" style="stroke: rgb(238, 238, 238); stroke-opacity: 1; stroke-width: 1px;"></path></g></g><g class="zerolinelayer"><path class="xzl zl crisp" d="M0,100v270" transform="translate(80,0)" style="stroke: rgb(68, 68, 68); stroke-opacity: 1; stroke-width: 1px;"></path></g><path class="xlines-below"></path><path class="ylines-below"></path><g class="overlines-below"></g><g class="xaxislayer-below"></g><g class="yaxislayer-below"></g><g class="overaxes-below"></g><g class="plot" transform="translate(80, 100)" clip-path="url(#clip2c2b08xyplot)"><g class="imagelayer"></g><g class="maplayer"></g><g class="barlayer"></g><g class="carpetlayer"></g><g class="violinlayer"></g><g class="boxlayer"></g><g class="scatterlayer"><g class="trace scatter tracef5f7ad" style="stroke-miterlimit: 2; opacity: 1;"><path class="js-line" d="M0,216L4.4,215.17L8.8,217.66L13.2,215.17L17.6,217.66L22,214.34L26.4,215.58L30.8,218.08L35.2,216L39.6,217.66L44,216.42L48.4,218.08L52.8,215.58L57.2,216.42L61.6,216L66,214.75L70.4,217.25L74.8,215.17L79.2,217.66L88,217.25L92.4,214.75L96.8,215.58L101.2,215.58L105.6,216.83L110,217.25L114.4,215.58L118.8,217.25L123.2,215.17L127.6,216.83L132,214.75L136.4,214.34L140.8,215.17L145.2,217.66L149.6,215.58L154,214.34L158.4,214.75L162.8,218.08L167.2,216.83L171.6,216.83L176,214.75L180.4,216.83L184.8,215.58L189.2,216.83L193.6,214.75L198,216.42L202.4,217.66L206.8,216.83L211.2,216.42L215.6,217.66L220,217.25L224.4,214.34L228.8,214.34L233.2,217.25L237.6,215.58L242,216.42L246.4,214.34L250.8,217.25L255.2,215.17L259.6,217.25L264,217.66L268.4,217.25L272.8,214.34L277.2,214.34L286,217.25L290.4,216.42L294.8,214.34L299.2,214.34L303.6,216L308,216L312.4,213.92L316.8,215.17L321.2,218.08L325.6,218.08L330,215.17L334.4,216.83L338.8,216L343.2,213.92L347.6,218.08L352,214.34L356.4,214.75L360.8,217.25L365.2,217.25L369.6,216L374,216.42L378.4,216L382.8,216.83L387.2,214.75L391.6,216.42L396,215.58" style="vector-effect: non-scaling-stroke; fill: none; stroke: rgb(31, 119, 180); stroke-opacity: 1; stroke-width: 2px; opacity: 1;"></path><g class="points"></g></g></g></g><g class="overplot"></g><path class="xlines-above crisp" style="fill: none;"></path><path class="ylines-above crisp" style="fill: none;"></path><g class="overlines-above"></g><g class="xaxislayer-above"><g class="xtick"><text text-anchor="middle" x="0" y="383" data-unformatted="0" data-math="N" transform="translate(80,0)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">0</text></g><g class="xtick"><text text-anchor="middle" x="0" y="383" data-unformatted="20" data-math="N" transform="translate(168,0)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">20</text></g><g class="xtick"><text text-anchor="middle" x="0" y="383" data-unformatted="40" data-math="N" transform="translate(256,0)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">40</text></g><g class="xtick"><text text-anchor="middle" x="0" y="383" data-unformatted="60" data-math="N" transform="translate(344,0)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">60</text></g><g class="xtick"><text text-anchor="middle" x="0" y="383" data-unformatted="80" data-math="N" transform="translate(432,0)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">80</text></g><g class="xtick"><text text-anchor="middle" x="0" y="383" data-unformatted="100" data-math="N" transform="translate(520,0)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">100</text></g></g><g class="yaxislayer-above"><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="10" data-math="N" transform="translate(0,370)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">10</text></g><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="20" data-math="N" transform="translate(0,328.46000000000004)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">20</text></g><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="30" data-math="N" transform="translate(0,286.91999999999996)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">30</text></g><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="40" data-math="N" transform="translate(0,245.38)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">40</text></g><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="50" data-math="N" transform="translate(0,203.85)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">50</text></g><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="60" data-math="N" transform="translate(0,162.31)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">60</text></g><g class="ytick"><text text-anchor="end" x="79" y="4.199999999999999" data-unformatted="70" data-math="N" transform="translate(0,120.77)" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 12px; fill: rgb(68, 68, 68); fill-opacity: 1; white-space: pre;">70</text></g></g><g class="overaxes-above"></g></g></g><g class="polarlayer"></g><g class="ternarylayer"></g><g class="geolayer"></g><g class="pielayer"></g><g class="glimages"></g></svg><div class="gl-container"></div><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="450"><defs id="topdefs-2c2b08"><g class="clips"></g></defs><g class="layer-above"><g class="imagelayer"></g><g class="shapelayer"></g></g><g class="infolayer"><g class="g-gtitle"></g><g class="g-xtitle"><text class="xtitle" x="300" y="422" text-anchor="middle" data-unformatted="Temps" data-math="N" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 14px; fill: rgb(68, 68, 68); opacity: 1; font-weight: normal; white-space: pre;">Temps</text></g><g class="g-ytitle"><text class="ytitle" transform="rotate(-90,42,235)" x="42" y="235" text-anchor="middle" data-unformatted="Température (degrés Celsius)" data-math="N" style="font-family: &quot;Open Sans&quot;, verdana, arial, sans-serif; font-size: 14px; fill: rgb(68, 68, 68); opacity: 1; font-weight: normal; white-space: pre;">Température (degrés Celsius)</text></g></g><g class="menulayer"></g><g class="zoomlayer"></g><g class="hoverlayer"></g></svg><div class="modebar modebar--hover"><div class="modebar-group"><a rel="tooltip" class="modebar-btn" data-title="Download plot as a png" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="m500 450c-83 0-150-67-150-150 0-83 67-150 150-150 83 0 150 67 150 150 0 83-67 150-150 150z m400 150h-120c-16 0-34 13-39 29l-31 93c-6 15-23 28-40 28h-340c-16 0-34-13-39-28l-31-94c-6-15-23-28-40-28h-120c-55 0-100-45-100-100v-450c0-55 45-100 100-100h800c55 0 100 45 100 100v450c0 55-45 100-100 100z m-400-550c-138 0-250 112-250 250 0 138 112 250 250 250 138 0 250-112 250-250 0-138-112-250-250-250z m365 380c-19 0-35 16-35 35 0 19 16 35 35 35 19 0 35-16 35-35 0-19-16-35-35-35z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn" data-title="Edit in Chart Studio" data-toggle="false" data-gravity="n"><svg height="1em" width="0.8571em" viewBox="0 0 857.1 1000"><path d="m214-7h429v214h-429v-214z m500 0h72v500q0 8-6 21t-11 20l-157 156q-5 6-19 12t-22 5v-232q0-22-15-38t-38-16h-322q-22 0-37 16t-16 38v232h-72v-714h72v232q0 22 16 38t37 16h465q22 0 38-16t15-38v-232z m-214 518v178q0 8-5 13t-13 5h-107q-7 0-13-5t-5-13v-178q0-8 5-13t13-5h107q7 0 13 5t5 13z m357-18v-518q0-22-15-38t-38-16h-750q-23 0-38 16t-16 38v750q0 22 16 38t38 16h517q23 0 50-12t42-26l156-157q16-15 27-42t11-49z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a></div><div class="modebar-group"><a rel="tooltip" class="modebar-btn active" data-title="Zoom" data-attr="dragmode" data-val="zoom" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="m1000-25l-250 251c40 63 63 138 63 218 0 224-182 406-407 406-224 0-406-182-406-406s183-406 407-406c80 0 155 22 218 62l250-250 125 125z m-812 250l0 438 437 0 0-438-437 0z m62 375l313 0 0-312-313 0 0 312z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn" data-title="Pan" data-attr="dragmode" data-val="pan" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="m1000 350l-187 188 0-125-250 0 0 250 125 0-188 187-187-187 125 0 0-250-250 0 0 125-188-188 186-187 0 125 252 0 0-250-125 0 187-188 188 188-125 0 0 250 250 0 0-126 187 188z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a></div><div class="modebar-group"><a rel="tooltip" class="modebar-btn" data-title="Zoom in" data-attr="zoom" data-val="in" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="m1 787l0-875 875 0 0 875-875 0z m687-500l-187 0 0-187-125 0 0 187-188 0 0 125 188 0 0 187 125 0 0-187 187 0 0-125z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn" data-title="Zoom out" data-attr="zoom" data-val="out" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="m0 788l0-876 875 0 0 876-875 0z m688-500l-500 0 0 125 500 0 0-125z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn" data-title="Autoscale" data-attr="zoom" data-val="auto" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="m250 850l-187 0-63 0 0-62 0-188 63 0 0 188 187 0 0 62z m688 0l-188 0 0-62 188 0 0-188 62 0 0 188 0 62-62 0z m-875-938l0 188-63 0 0-188 0-62 63 0 187 0 0 62-187 0z m875 188l0-188-188 0 0-62 188 0 62 0 0 62 0 188-62 0z m-125 188l-1 0-93-94-156 156 156 156 92-93 2 0 0 250-250 0 0-2 93-92-156-156-156 156 94 92 0 2-250 0 0-250 0 0 93 93 157-156-157-156-93 94 0 0 0-250 250 0 0 0-94 93 156 157 156-157-93-93 0 0 250 0 0 250z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn" data-title="Reset axes" data-attr="zoom" data-val="reset" data-toggle="false" data-gravity="n"><svg height="1em" width="0.9286em" viewBox="0 0 928.6 1000"><path d="m786 296v-267q0-15-11-26t-25-10h-214v214h-143v-214h-214q-15 0-25 10t-11 26v267q0 1 0 2t0 2l321 264 321-264q1-1 1-4z m124 39l-34-41q-5-5-12-6h-2q-7 0-12 3l-386 322-386-322q-7-4-13-4-7 2-12 7l-35 41q-4 5-3 13t6 12l401 334q18 15 42 15t43-15l136-114v109q0 8 5 13t13 5h107q8 0 13-5t5-13v-227l122-102q5-5 6-12t-4-13z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a></div><div class="modebar-group"><a rel="tooltip" class="modebar-btn" data-title="Toggle Spike Lines" data-attr="_cartesianSpikesEnabled" data-val="on" data-toggle="false" data-gravity="n"><svg height="1em" width="1em" viewBox="0 0 1000 1000"><path d="M512 409c0-57-46-104-103-104-57 0-104 47-104 104 0 57 47 103 104 103 57 0 103-46 103-103z m-327-39l92 0 0 92-92 0z m-185 0l92 0 0 92-92 0z m370-186l92 0 0 93-92 0z m0-184l92 0 0 92-92 0z" transform="matrix(1.5 0 0 -1.5 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn" data-title="Show closest data on hover" data-attr="hovermode" data-val="closest" data-toggle="false" data-gravity="ne"><svg height="1em" width="1.5em" viewBox="0 0 1500 1000"><path d="m375 725l0 0-375-375 375-374 0-1 1125 0 0 750-1125 0z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a><a rel="tooltip" class="modebar-btn active" data-title="Compare data on hover" data-attr="hovermode" data-val="x" data-toggle="false" data-gravity="ne"><svg height="1em" width="1.125em" viewBox="0 0 1125 1000"><path d="m187 786l0 2-187-188 188-187 0 0 937 0 0 373-938 0z m0-499l0 1-187-188 188-188 0 0 937 0 0 376-938-1z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a></div><div class="modebar-group"><a href="https://plot.ly/" target="_blank" data-title="Produced with Plotly" class="modebar-btn plotlyjsicon modebar-btn--logo"><svg height="1em" width="1.542em" viewBox="0 0 1542 1000"><path d="m0-10h182v-140h-182v140z m228 146h183v-286h-183v286z m225 714h182v-1000h-182v1000z m225-285h182v-715h-182v715z m225 142h183v-857h-183v857z m231-428h182v-429h-182v429z m225-291h183v-138h-183v138z" transform="matrix(1 0 0 -1 0 850)"></path></svg></a></div></div></div></div></div>
+		
+			<div style="position:absolute;z-index:500;top:500px;left:950px;border:solid 1px;padding:10px;">
+				<p>
+				  Bloc: <select name="box" id="box">
+					  <option value="1">HPF</option>
+					  <option value="0">LPF</option>
+				   </select>
+				</p>
+				<p>Order: <input id="orderd"></input></p>
+				<p>WLag: <input id="wlag"></input></p>
+				<p><button onclick="apply()">Appliquer</button></p>
+			</div>
+			
+		</div>
+			
+		<div style="width:100%;display:none;" id="data_table">
+			<table style="margin-top:50px;" id="table_rows">
+				<tr><th>Temps (s)</th><th>Température</th><tr>
+			</table>
+		</div>
+		
+		
+	
+	
+	<script>
+	
+	
+		var water_level = 0;
+		var l_in = false;
+		var l_out = false;
+		var insimul = true;
+		var current_filter = false;
+		var iirFilter
+		
+		function topbtn(){
+			if(insimul){
+				insimul = false;
+				$("#principal").hide();
+				$("#data_table").show();
+				$("#topbtn").html("SIMULATION");
+			}
+			else{
+				insimul = true;
+				$("#principal").show();
+				$("#data_table").hide();
+				$("#topbtn").html("DONNÉES");
+			}
+		}
+		
+		
+		function apply(){
+			no_error = true;
+			box = parseInt($("#box").val());
+			
+			order = parseInt( $("#orderd").val() )
+			console.log(order);
+			console.log(isNaN(order));
+			if (isNaN(order) == false){
+				if((order<1) || (order>12)){
+					no_error = false;
+					alert("Order doit être entre 1 et 12 inclusivement.")
+				}
+			}
+			else{
+				no_error = false;
+				alert("Manque valeur.")
+			}
+			
+			if(no_error){
+				wlag = parseFloat( $("#wlag").val().replace(',',".") )
+				if (isNaN(wlag) == false){
+			
+				}
+				else{
+					no_error = false;
+					alert("Manque valeur.")
+				}
+			}
+				
+			
+			if(no_error){
+		
+				var iirCalculator = new Fili.CalcCascades();
+				if(box == 0){
+					var iirFilterCoeffs = iirCalculator.lowpass({
+						order: order, // cascade 3 biquad filters (max: 12)
+						characteristic: 'butterworth',
+						Fs: 5, // sampling frequency
+						Fc: wlag/(2*3.1416), // cutoff frequency / center frequency for bandpass, bandstop, peak
+					  });
+					alert("LPF EN FONCTION")
+				}
+				else{
+					var iirFilterCoeffs = iirCalculator.highpass({
+						order: order, // cascade 3 biquad filters (max: 12)
+						characteristic: 'butterworth',
+						Fs: 5, // sampling frequency
+						Fc: wlag/(2*3.1416), // cutoff frequency / center frequency for bandpass, bandstop, peak
+					  });
+					alert("HPF EN FONCTION")
+				}
+				iirFilter = new Fili.IirFilter(iirFilterCoeffs);
+				current_filter = true;
+			}
+
+		}
+		
+		
+		// Modify level
+		setInterval(function () {
+			
+			if(insimul){
+				// Change water level
+				if(l_in){
+					water_level = water_level + 1;
+				}
+				if(l_out){
+					water_level = water_level - 1;
+				}
+				if(water_level < 0){
+					water_level = 0;
+				}
+				if(water_level > 395){
+					water_level = 395;
+				}
+				
+				$("#blue").css("height",(45+water_level)+"px");
+				$("#blue").css("top",(465-water_level)+"px")
+			}
+				
+		}, 100);
+		
+		
+		// 
+		function mod_1(){
+			if(l_in){
+				l_in = false;
+				$("#levier_in").css("transform","rotate(90deg)")
+			}
+			else{
+				l_in = true;
+				$("#levier_in").css("transform","rotate(0deg)")
+			}
+		}
+		
+		function mod_2(){
+			if(l_out){
+				l_out = false;
+				$("#levier_out").css("transform","rotate(-90deg)")
+			}
+			else{
+				l_out = true;
+				$("#levier_out").css("transform","rotate(0deg)")
+			}
+		}
+		
+		
+		air_temp = 23
+		water_temp = 60
+		current_thermo_temp = 23
+
+		var current_x = 0;
+		var x = []
+		var y = []
+		var x_filter = []
+		var y_filter = []
+
+		// New temperature each second
+		setInterval(function () {
+			
+			if(insimul){
+			
+				current_x = current_x + 0.2;
+			
+				if(water_level < 152){
+					current_thermo_temp = current_thermo_temp + (air_temp-current_thermo_temp)*0.08
+				}
+				else if(water_level >= 152){
+					current_thermo_temp = current_thermo_temp + (water_temp-current_thermo_temp)*0.25
+				}
+				
+				thermo_bruit = current_thermo_temp + 10*Math.random() - 0.5;
+				thermo_bruit = Math.round(thermo_bruit * 10) / 10
+				
+				x.push(current_x);
+				y.push(thermo_bruit);
+				
+				if(current_filter){
+					x_filter.push(current_x);
+					denoised = iirFilter.singleStep(thermo_bruit);
+					y_filter.push(denoised);
+				}
+				
+				// add to table
+				$("#table_rows").append("<tr><td>"+current_x+"</td><td>"+thermo_bruit+"</td></tr>")
+				
+				if(y.length>100){
+					x = x.slice(1,101);
+					y = y.slice(1,101);
+				}
+				if(y_filter.length>100){
+					x_filter = x_filter.slice(1,101);
+					y_filter = y_filter.slice(1,101);
+
+				}
+				
+				trace1 = {
+				  x: x,
+				  y: y,
+				  type: 'line',
+				  mode: "line"
+				};
+				
+				if(current_filter == false){
+					data = [trace1];
+				}
+				else{
+					trace2 = {
+					  x: x_filter,
+					  y: y_filter,
+					  type: 'line',
+					  mode: "line"
+					};
+					data = [trace1, trace2];
+				}
+				
+				var layout = {
+				  yaxis: {
+					title: 'Température (degrés Celsius)',
+					range:[-20, 75]
+				  },
+				  xaxis: {
+					title: 'Temps (s)',
+				  },
+				  showlegend: false
+				};
+				
+				Plotly.newPlot('plotlycontainer', data, layout);
+				
+			}
+				
+		}, 200);
+		
+		
+		
+	</script>
+
+<svg id="js-plotly-tester" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position: absolute; left: -10000px; top: -10000px; width: 9000px; height: 9000px; z-index: 1;"><path class="js-reference-point" d="M0,0H1V1H0Z" style="stroke-width: 0; fill: black;"></path></svg></body></html>

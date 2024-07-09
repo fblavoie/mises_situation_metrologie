@@ -1,0 +1,210 @@
+<html charset="utf-8" >
+
+	<head>
+		
+	
+		<script		
+			src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<link href="https://code.jquery.com/ui/1.8.18/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+		<script src="https://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+		
+		<link href="css/style.css" rel="stylesheet" />
+
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			
+		
+			<div id="main" style="width:1200px;height:710px;background:url('img/cal_debit.png');float:left;">
+			</div>
+			
+			<div style="position:absolute;left:-70px;top:-65px;">
+				<img id="levier" src="img/levier.png" >
+			</div>
+			
+			<script>
+				var dir_pressure = 0;
+				var dir_nut1 = 0;
+				var dir_nut0 = 0;
+			</script>
+			
+			
+			<div style="position:absolute;left:90px;top:100px;">
+				<img class="btn" onclick="mod_pressure(-1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg)">
+			</div>
+			<div style="position:absolute;left:130px;top:100px;">
+				<img class="btn" onclick="mod_pressure(1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg);-webkit-transform: scaleY(-1);transform: scaleY(-1);">
+			</div>
+			<div id="pressure"  style="position:absolute;left:90px;top:35px;font-size:230%;display:none;">0 psi</div>
+			<div id="current"  style="position:absolute;left:630px;top:15px;font-size:230%">4 mA</div>
+
+			<div id="water" style="position:absolute;left:730px;top:430px;width:413px;height:270px;background-color:#9b04d6;">
+			</div>
+	
+			<button style="font-size:150%;position:absolute;top:650px;left:1150px;" onclick="current_level=0.0">VIDER</button>
+		
+		
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		$(function() {
+			$(".live_draggable").draggable();
+		});
+	
+		var zero = 0;
+		var span = 0;
+	
+		var current_pos = 0
+		var current_pressure = 0.0;
+		var current_level = 0.0;
+	
+		setInterval(function () {
+			
+			if( dir_nut0 != 0 ){
+				mod(0,dir_nut0)
+			}
+			if( dir_nut1 != 0 ){
+				mod(1,dir_nut1)
+			}
+			if( dir_pressure != 0 ){
+				mod_pressure(dir_pressure);
+			}
+			
+		}, 150);
+		
+	
+		function mod(element,diff){
+			
+			// Show current pressure
+			show_pressure = 4 +  Math.round(current_pressure * 100) / 100
+			$("#pressure").html(show_pressure + " psi")
+			
+			if(element == 0){
+				zero = zero + diff;
+			}
+			else if (element == 1){
+				span = span + diff;
+			}
+			
+			$("#nut_zero").css("transform","rotate("+(5*zero)+"deg)");
+			$("#nut_span").css("transform","rotate("+(5*span)+"deg)");
+			
+			a = (span+50)*.005
+			b = (zero-20)*.1 + a*6
+			
+			z = Math.pow(current_pressure,1)
+			
+			intensity = a*z + b
+			if(intensity<0){
+				intensity = 0
+			}
+			
+			show_intensity = 4 + Math.pow(Math.round(intensity * 10) / 10 , 0.5);
+			show_intensity = Math.round(show_intensity*100)/100;
+			
+			$("#current").html(show_intensity + " mA")
+
+			modifying = true;
+
+		}
+		
+		
+		function rotate(current_pos){
+		
+			$("#levier").css("transform","rotate(-"+(5*current_pos/4)+"deg)");
+
+			if (new_pos){
+				if (current_pos>0){
+					current_pressure = (current_pos/4)*(current_pos/4)/2 + Math.random()*1 - 2
+				}
+				else{
+					current_pressure = 0
+				}
+				
+				if(current_pressure<0){
+					current_pressure = 0;
+				}
+			}
+			new_pos = false
+		
+		}
+		
+		
+		var modifying = true;
+		
+		function mod_pressure(diff){
+			
+			modifying = false;
+		
+			setTimeout(function () {
+			
+				current_pos = current_pos + diff;
+				
+				new_pos = true
+				if(current_pos<0){
+					current_pos = 0;
+					new_pos = false;
+				}
+				else if(current_pos>18*4){
+					current_pos = 18*4;
+					new_pos = false;
+				}
+				
+				// Change drag box position
+				$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+				
+				console.log(current_pos);
+				rotate(current_pos);
+				mod(0,0);	
+				
+			}, 55);
+			
+		}
+		
+		
+		setInterval(function () {
+			
+			if(modifying){
+						
+	
+				
+			}
+			
+			
+			
+			// Modify water level
+			to_add = (current_pressure/200);
+			current_level = current_level + to_add
+			if( current_level > 270){
+				current_level = 270;
+			}
+			if( current_level < 0 ){
+				current_level = 0;
+			}
+			
+			// Modify water
+			top_el = 430 + (270 - current_level);
+			$("#water").css("top",top_el + "px");
+			$("#water").css("height",current_level + "px");
+
+				
+		},12.5)
+
+		// Change drag box position
+		$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+
+
+		
+
+	
+	</script>
+
+</html>

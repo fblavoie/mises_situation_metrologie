@@ -1,0 +1,270 @@
+<html charset="utf-8" >
+
+	<head>
+		
+	
+		<script		
+			src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<link href="https://code.jquery.com/ui/1.8.18/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+		<script src="https://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+		
+		<link href="css/style.css" rel="stylesheet" />
+
+		<style>
+			.dot {
+			  height: 75px;
+			  width: 75px;
+			  background-color: red;
+			  border-radius: 50%;
+			  display: block;
+			}
+		</style>
+		
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			
+		
+			<div id="main" style="width:1200px;height:710px;background:url('img/debit_pression.png');background-size: auto;float:left;">
+			</div>
+			
+			<div style="position:absolute;left:-38px;top:515px;">
+				<img id="levier" src="img/levier.png" style="width:300px;height:auto;" >
+			</div>
+			
+			<script>
+				var dir_pressure = 0;
+				var dir_nut1 = 0;
+				var dir_nut0 = 0;
+			</script>
+			
+			
+			<div style="position:absolute;left:90px;top:570px;">
+				<img class="btn" onclick="mod_pressure(-1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg)">
+			</div>
+			<div style="position:absolute;left:130px;top:570px;">
+				<img class="btn" onclick="mod_pressure(1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg);-webkit-transform: scaleY(-1);transform: scaleY(-1);">
+			</div>
+
+			<div style="position:absolute;left:1050px;top:30px;">
+				<img class="btn" onclick="mod_pressure2(-1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg)">
+			</div>
+			<div style="position:absolute;left:1090px;top:30px;">
+				<img class="btn" onclick="mod_pressure2(1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg);-webkit-transform: scaleY(-1);transform: scaleY(-1);">
+			</div>
+
+
+			<img id="wheel" src="img/wheel.png" style="width:80px;height:auto;position:absolute;left:1045px;top:60px;z-index:500" />
+			<div id="stem" style="position:absolute;left:1075px;width:20px;top:60px;height:70px;background-color:rgb(190,190,190);"></div>
+
+			<div id="pressure"  style="position:absolute;left:290px;top:550px;font-size:180%;">0 L/min</div>
+			<div id="current"  style="position:absolute;left:530px;top:90px;font-size:230%">0 psi</div>
+
+			<span id="ball" style="position:absolute;left:710px;top:620px;" class="dot"></span>
+			
+		
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		$(function() {
+			$(".live_draggable").draggable();
+		});
+	
+		var zero = 0;
+		var span = 0;
+	
+		var current_pos = 0
+		var current_pos2 = 0;
+
+		var current_pressure = 0.0;
+		var current_level = 0.0;
+	
+		setInterval(function () {
+			
+			if( dir_nut0 != 0 ){
+				mod(0,dir_nut0)
+			}
+			if( dir_nut1 != 0 ){
+				mod(1,dir_nut1)
+			}
+			if( dir_pressure != 0 ){
+				mod_pressure(dir_pressure);
+			}
+			
+		}, 150);
+		
+	
+	
+		function mod(element,diff){
+			
+			x1 = current_pos/18/4*25;
+			x2 = current_pos2*10;
+			
+			console.log(x1)
+			console.log(x2)
+			if(x2 < 1){
+				y = 1.60852059 + 8.61621302e+00*x1 + -7.99577541e-02*x2 + -2.56071110e-01*Math.pow(x1,2) + -5.70637931e-01*x1*x2 + 2.20479550e-01*Math.pow(x2,2) + 4.64586353e-03*Math.pow(x1,3) + 1.71109466e-02*Math.pow(x1,2)*x2 + -2.73535229e-03*x1*Math.pow(x2,2) + -2.69465653e-03*Math.pow(x2,3)
+			}
+			else{
+				y = 56.71383572 + 6.21863275e-02*x1 + -7.75628631e+00*x2 + 4.43813523e-01*Math.pow(x1,2) + 1.84702745e-01*x1*x2 + 2.91812822e-01*Math.pow(x2,2) + -1.31085895e-02*Math.pow(x1,3) + -2.01399632e-03*Math.pow(x1,2)*x2 + -3.94203535e-03*x1*Math.pow(x2,2) + -3.25023893e-03*Math.pow(x2,3)
+			}
+			console.log(y)
+			y = y/130
+
+			
+			if(y<0){
+				y=0;
+			}
+			if(y>1){
+				y=1;
+			}
+			
+			new_top = 240+380*(1-y)
+			
+			$("#ball").css("top",new_top+"px");
+			
+			modifying = true;
+
+		}
+		
+		
+		
+		function rotate(current_pos){
+		
+			$("#levier").css("transform","rotate(-"+(5*current_pos/4)+"deg)");
+
+			if (new_pos){
+				if (current_pos>0){
+					current_pressure = (current_pos/4)*(current_pos/4)/2 + Math.random()*1 - 2
+				}
+				else{
+					current_pressure = 0
+				}
+				
+				if(current_pressure<0){
+					current_pressure = 0;
+				}
+			}
+			new_pos = false
+		
+		}
+		
+		
+		var modifying = true;
+		
+		function mod_pressure(diff){
+			
+			modifying = false;
+		
+			setTimeout(function () {
+			
+				current_pos = current_pos + diff;
+				
+				new_pos = true
+				if(current_pos<0){
+					current_pos = 0;
+					new_pos = false;
+				}
+				else if(current_pos>18*4){
+					current_pos = 18*4;
+					new_pos = false;
+				}
+				
+				// Change drag box position
+				$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+				
+				// 
+				
+				$("#pressure").html( Math.round((current_pos/18/4*25)*10)/10 + " L/min")
+
+				
+				console.log(current_pos);
+				rotate(current_pos);
+				mod(0,0);	
+				
+			}, 55);
+			
+		}
+		
+		
+		function mod_pressure2(diff){
+			
+			modifying = false;
+		
+			setTimeout(function () {
+			
+				current_pos2 = current_pos2 + diff;
+				
+				new_pos = true
+				if(current_pos2<0){
+					current_pos2 = 0;
+					new_pos = false;
+				}
+				else if(current_pos2>4){
+					current_pos2 = 4;
+					new_pos = false;
+				}
+				
+				
+				// MANQUE ANIMATION
+				$("#wheel").css("top",(60+current_pos2*10)+"px")
+				$("#stem").css( "top",(60+current_pos2*10)+"px")
+				$("#stem").css( "height",(70-current_pos2*10)+"px")
+
+
+				$("#current").html((current_pos2*10) + " psi")
+
+				mod(0,0);
+				
+			}, 55);
+			
+		}
+		
+		
+		
+		setInterval(function () {
+			
+			if(modifying){
+						
+	
+				
+			}
+			
+			
+			
+			// Modify water level
+			to_add = (current_pressure/200);
+			current_level = current_level + to_add
+			if( current_level > 270){
+				current_level = 270;
+			}
+			if( current_level < 0 ){
+				current_level = 0;
+			}
+			
+			// Modify water
+			top_el = 430 + (270 - current_level);
+			$("#water").css("top",top_el + "px");
+			$("#water").css("height",current_level + "px");
+
+				
+		},12.5)
+
+		// Change drag box position
+		$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+
+
+		mod(0,0)
+		
+
+	
+	</script>
+
+</html>

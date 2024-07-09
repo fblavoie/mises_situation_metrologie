@@ -1,0 +1,294 @@
+<html charset="utf-8" >
+
+	<head>
+		
+	
+		<script		
+			src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<link href="https://code.jquery.com/ui/1.8.18/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+		<script src="https://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+		
+		<link href="css/style.css" rel="stylesheet" />
+
+		<style>
+			.dot {
+			  height: 75px;
+			  width: 75px;
+			  background-color: red;
+			  border-radius: 50%;
+			  display: block;
+			}
+		</style>
+		
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			
+		
+			<div id="main" style="width:1200px;height:710px;background:url('img/debit_air.png');background-size: auto;float:left;">
+			</div>
+			
+			<div style="position:absolute;left:-38px;top:390px;">
+				<img id="levier" src="img/levier.png" style="width:350px;height:auto;" >
+			</div>
+			<div style="position:absolute;left:-22px;top:35px;">
+				<img id="levier2" src="img/levier.png" style="width:300px;height:auto;" >
+			</div>
+			
+			<script>
+				var dir_pressure = 0;
+				var dir_nut1 = 0;
+				var dir_nut0 = 0;
+			</script>
+			
+			
+			<div style="position:absolute;left:90px;top:470px;">
+				<img class="btn" onclick="mod_pressure(-1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg)">
+			</div>
+			<div style="position:absolute;left:130px;top:470px;">
+				<img class="btn" onclick="mod_pressure(1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg);-webkit-transform: scaleY(-1);transform: scaleY(-1);">
+			</div>
+
+			<div style="position:absolute;left:70px;top:100px;">
+				<img class="btn" onclick="mod_pressure2(-1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg)">
+			</div>
+			<div style="position:absolute;left:110px;top:100px;">
+				<img class="btn" onclick="mod_pressure2(1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg);-webkit-transform: scaleY(-1);transform: scaleY(-1);">
+			</div>
+
+
+
+			<div id="pressure"  style="position:absolute;left:690px;top:640px;font-size:180%;">0 ft/s</div>
+			<div id="current"  style="position:absolute;left:990px;top:390px;font-size:230%">0 psi</div>
+
+			
+		
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		$(function() {
+			$(".live_draggable").draggable();
+		});
+	
+		var zero = 0;
+		var span = 0;
+	
+		var current_pos = 0
+		var current_pos2 = 0;
+
+		var current_pressure = 0.0;
+		var current_level = 0.0;
+	
+		setInterval(function () {
+			
+			if( dir_nut0 != 0 ){
+				mod(0,dir_nut0)
+			}
+			if( dir_nut1 != 0 ){
+				mod(1,dir_nut1)
+			}
+			if( dir_pressure != 0 ){
+				mod_pressure(dir_pressure);
+			}
+			
+		}, 150);
+		
+	
+	
+		function mod(element,diff){
+			
+			x1 = current_pos/18/4*100;
+			x2 = current_pos2/18/4*100;
+			
+			console.log(x1)
+			console.log(x2)
+			
+			if (x2<1){
+			
+				y1 = 14.91031746 + -1.51653439e-02*x1 + 6.93889390e-18 *x2 + 2.87698413e-04*Math.pow(x1,2) + 0*x1*x2 + 0*Math.pow(x2,2) + -4.74537037e-06*Math.pow(x1,3) + 0*Math.pow(x1,2)*x2 + 0*x1*Math.pow(x2,2) + 0*Math.pow(x2,3)
+				console.log(y1)			
+				if(y1<0){
+					y1=0;
+				}
+				
+				y2 = 0 + 1.60906085e-01*x1 + -8.32667268e-17*x2 + 1.44528770e-02*Math.pow(x1,2) + 0*x1*x2 + 0*Math.pow(x2,2) +  -7.63078704e-05 *Math.pow(x1,3) + 0*Math.pow(x1,2)*x2 + 0*x1*Math.pow(x2,2) + 0*Math.pow(x2,3)
+				console.log(y2)			
+				if(y2<0){
+					y2=0;
+				}
+				
+			}
+			else{
+			
+				y1 = 1.64992687 + 6.36949118e-05*x1 + -9.41878565e-02 *x2 + 2.18369872e-03*Math.pow(x1,2) + 6.17415809e-05*x1*x2 +  1.60691173e-03*Math.pow(x2,2) + -1.76968113e-05*Math.pow(x1,3) + -9.13815215e-07*Math.pow(x1,2)*x2 + 1.14784206e-07*x1*Math.pow(x2,2) + -8.11571580e-06*Math.pow(x2,3)
+				console.log(y1)			
+				if(y1<0){
+					y1=0;
+				}
+				
+				y2 = -1.84403732 + 1.16768854e-04*x1 + 1.02446518e-01*x2 + 4.00343174e-03*Math.pow(x1,2) + 6.25886366e-04*x1*x2 + -1.69333087e-03*Math.pow(x2,2) +  -1.01197356e-05*Math.pow(x1,3) + -7.94195079e-06*Math.pow(x1,2)*x2 + 8.60881543e-07*x1*Math.pow(x2,2) + 8.55217611e-06*Math.pow(x2,3)
+				console.log(y2)			
+				if(y2<0){
+					y2=0;
+				}
+			
+			}
+
+			$("#pressure").html( Math.round(y1*100)/100 + " ft/s" )
+			$("#current").html( Math.round(y2*100)/100 + " gpm" )
+
+			
+			modifying = true;
+
+		}
+		
+		
+		
+		function rotate(current_pos){
+		
+			$("#levier").css("transform","rotate(-"+(5*current_pos/4)+"deg)");
+
+			if (new_pos){
+				if (current_pos>0){
+					current_pressure = (current_pos/4)*(current_pos/4)/2 + Math.random()*1 - 2
+				}
+				else{
+					current_pressure = 0
+				}
+				
+				if(current_pressure<0){
+					current_pressure = 0;
+				}
+			}
+			new_pos = false
+		
+		}
+		
+		
+		function rotate2(current_pos){
+		
+			$("#levier2").css("transform","rotate(-"+(5*current_pos/4)+"deg)");
+
+			if (new_pos){
+				if (current_pos>0){
+					current_pressure = (current_pos/4)*(current_pos/4)/2 + Math.random()*1 - 2
+				}
+				else{
+					current_pressure = 0
+				}
+				
+				if(current_pressure<0){
+					current_pressure = 0;
+				}
+			}
+			new_pos = false
+		
+		}
+		
+		
+		var modifying = true;
+		
+		function mod_pressure(diff){
+			
+			modifying = false;
+		
+			setTimeout(function () {
+			
+				current_pos = current_pos + diff;
+				
+				new_pos = true
+				if(current_pos<0){
+					current_pos = 0;
+					new_pos = false;
+				}
+				else if(current_pos>18*4){
+					current_pos = 18*4;
+					new_pos = false;
+				}
+				
+
+				
+				console.log(current_pos);
+				rotate(current_pos);
+				mod(0,0);	
+				
+			}, 55);
+			
+		}
+		
+		
+		function mod_pressure2(diff){
+			
+			modifying = false;
+		
+			setTimeout(function () {
+			
+				current_pos2 = current_pos2 + diff*18*4/3;
+				
+				new_pos = true
+				if(current_pos2<0){
+					current_pos2 = 0;
+					new_pos = false;
+				}
+				else if(current_pos2>18*4){
+					current_pos2 = 18*4;
+					new_pos = false;
+				}
+				
+				
+				console.log(current_pos2);
+				rotate2(current_pos2);
+				mod(0,0);	
+				
+				
+			}, 55);
+			
+		}
+		
+		
+		
+		setInterval(function () {
+			
+			if(modifying){
+						
+	
+				
+			}
+			
+			
+			
+			// Modify water level
+			to_add = (current_pressure/200);
+			current_level = current_level + to_add
+			if( current_level > 270){
+				current_level = 270;
+			}
+			if( current_level < 0 ){
+				current_level = 0;
+			}
+			
+			// Modify water
+			top_el = 430 + (270 - current_level);
+			$("#water").css("top",top_el + "px");
+			$("#water").css("height",current_level + "px");
+
+				
+		},12.5)
+
+		// Change drag box position
+		$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+
+
+		mod(0,0);
+
+	
+	</script>
+
+</html>

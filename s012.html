@@ -107,7 +107,7 @@
 				intensity = 0
 			}
 			
-			show_intensity = 4 + Math.pow(Math.round(current_pressure * 10) / 10 , 0.5);
+			show_intensity = 4 + Math.pow(Math.round(current_pressure * 10) / 10 , 2)/26000*15;
 			show_intensity = Math.round(show_intensity*100)/100;
 			
 			$("#current").html(show_intensity + " mA")

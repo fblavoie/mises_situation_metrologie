@@ -227,6 +227,8 @@
 		reachable = get_url_param("reachable",1)
 		
 		tags_written = get_url_param("tags_written",0)
+		
+		min_measure_scaling = get_url_param("min_measure_scaling",1)
 
 		
 		// ----------------------------------------
@@ -272,8 +274,15 @@
 			$("#pressure_show").html(pressure_value_round)
 			
 			// Convert pressure to signal
-			signal = (pressure_value-min_measure)/(max_measure-min_measure)*(max_signal-min_signal)+min_signal
+			if(min_measure_scaling == 1){ // Consider min_measure in scaling
+				signal = (pressure_value-min_measure)/(max_measure-min_measure)*(max_signal-min_signal)+min_signal
+			}
+			else{ // Only consider max_measure in scaling
+				signal = (pressure_value)/(max_measure)*(max_signal-min_signal)+min_signal
+			}
 			
+			
+			// Insert analogic value in box
 			$("#analog_input_0").val(round(signal,5))
 			
 			

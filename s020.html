@@ -134,26 +134,15 @@
 
 			
 			<div style="position:absolute;top:300px;left:50px;" >
-				<img src="img/scp_block.png" style="position:absolute;z-index:5">
+				<img src="img/cpt_block.png" style="position:absolute;z-index:5">
+				
 				<div style="position:absolute;z-index:10;top:95px;left:200px;">
-					<input id="Input"></input>
+					<input id="Output" style="width:320px"></input>
 				</div>
-				<div style="position:absolute;z-index:10;top:152px;left:200px;">
-					<input id="Input_Min"></input>
+				<div style="position:absolute;z-index:10;top:160px;left:200px;">
+					<input id="Expression" style="width:320px"></input>
 				</div>
-				<div style="position:absolute;z-index:10;top:210px;left:200px;">
-					<input id="Input_Max"></input>
-				</div>
-				<div style="position:absolute;z-index:10;top:268px;left:200px;">
-					<input id="Scaled_Min"></input>
-				</div>
-				<div style="position:absolute;z-index:10;top:327px;left:200px;">
-					<input id="Scaled_Max"></input>
-				</div>
-				<div style="position:absolute;z-index:10;top:387px;left:200px;">
-					<input id="Output"></input>
-				</div>
-
+				
 			</div>
 
 			<div style="position:absolute;z-index:600;left:700px;width:400px;top:50px;" class="slidecontainer">
@@ -220,7 +209,7 @@
 		
 		
 		function round(nb,decimals){
-			return Math.round(nb*Math.pow(10,decimals))/Math.pow(10,decimals)
+			return Math.round(nb*(10**decimals))/(10**decimals)
 		}
 		
 	
@@ -228,26 +217,27 @@
 	
 	
 		setInterval(function () {  // 0.1 second interval ----------------------------------------------------------------
-			
-			
+		
+		
 			signal = signal_calculation()
 
 			
 			
 			// Get values
-			Input = $("#Input").val();
-			Input_Min = parseFloat($("#Input_Min").val());
-			Input_Max = parseFloat($("#Input_Max").val());
-			Scaled_Min = parseFloat($("#Scaled_Min").val());
-			Scaled_Max = parseFloat($("#Scaled_Max").val());
+			Expression = $("#Expression").val();
 			Output = $("#Output").val();
 			
-			
+			analog_input_0 = signal
 
-			if( (Input.localeCompare("analog_input_0")==0) && (Output.localeCompare("pressure")==0)){
-				input_mod = (signal-Input_Min)/(Input_Max-Input_Min)
-				result = input_mod*(Scaled_Max-Scaled_Min) + Scaled_Min
-				$("#pressure").val(round(result,5))
+			if( (Output.localeCompare("pressure")==0)){
+				try {
+					result = eval(Expression);
+					result = round(result,5);
+				} catch (error) {
+					result = "NaN"
+				}
+				
+				$("#pressure").val(result)
 			}
 
 		}, 100);

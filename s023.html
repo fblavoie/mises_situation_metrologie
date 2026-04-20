@@ -1,0 +1,238 @@
+<html charset="utf-8" >
+
+	<head>
+		
+	
+		<script		
+			src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<link href="https://code.jquery.com/ui/1.8.18/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+		<script src="https://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+		
+		<link href="css/style.css" rel="stylesheet" />
+
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+		<div style="width:100%;">
+			
+		
+			<div id="main" style="width:1200px;height:691px;background:url('img/tuyau2.PNG');float:left;">
+			</div>
+			
+			<div style="position:absolute;left:-40px;top:345px;">
+				<img id="levier" src="img/levier.png" >
+			</div>
+			
+			<script>
+				var dir_pressure = 0;
+				var dir_nut1 = 0;
+				var dir_nut0 = 0;
+			</script>
+			
+			
+			<div style="position:absolute;left:120px;top:510px;">
+				<img class="btn" onclick="mod_pressure(-1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg)">
+			</div>
+			<div style="position:absolute;left:160px;top:510px;">
+				<img class="btn" onclick="mod_pressure(1)"  src="img/rotate_horaire.png" style="width:30px;height:auto;transform:rotate(90deg);-webkit-transform: scaleY(-1);transform: scaleY(-1);">
+			</div>
+			<div id="pressure"  style="position:absolute;left:90px;top:65px;font-size:230%">0 psi</div>
+			<div id="current"  style="position:absolute;left:970px;top:65px;font-size:230%">0 mA</div>
+
+
+
+			<img id="nut_zero" src="img/nut.png" style="width:65px;height:auto;position:absolute;top:360px;left:440px;"/>
+			<img class="btn" onclick="dir_nut0_i=0.5" onmousedown="dir_nut0=0.5" onmouseup="dir_nut0=0" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:505px;"/>
+			<img class="btn" onclick="dir_nut0_i=-0.5" onmousedown="dir_nut0=-0.5" onmouseup="dir_nut0=0" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:410px;-webkit-transform: scaleX(-1);transform: scaleX(-1);"/>
+			
+			<img id="nut_span" src="img/nut.png" style="width:65px;height:auto;position:absolute;top:360px;left:580px;"/>
+			<img class="btn" onclick="dir_nut1_i=0.5"  onmousedown="dir_nut1=0.5" onmouseup="dir_nut1=0" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:645px;"/>
+			<img class="btn" onclick="dir_nut1_i=-0.5"  onmousedown="dir_nut1=-0.5" onmouseup="dir_nut1=0" src="img/rotate_horaire.png" style="width:30px;height:auto;position:absolute;top:360px;left:550px;-webkit-transform: scaleX(-1);transform: scaleX(-1);"/>
+		
+		
+			<div class="box_wrapper">
+				<div id="dragbox" class="live_draggable live_resizable layer" onblur="console.log('blur')"></div>
+			</div> 
+		
+			<div style="position:absolute;top:700px;left:500px;background-color:yellow;font-size:50px;" id="code">0-0-0</div>
+		
+		</div>
+			
+	</body>
+	
+	<script>
+	
+		$(function() {
+			$(".live_draggable").draggable();
+		});
+	
+		var zero = 0;
+		var span = 0;
+	
+		var current_pos = 0
+		var current_pressure = 0.0;
+		
+	
+		setInterval(function () {
+			
+			if( (dir_nut0 != 0) || (dir_nut0_i != 0) ){
+				if(dir_nut0_i != 0){
+					mod(0,dir_nut0_i)
+					dir_nut0_i = 0;
+				}
+				else{
+					mod(0,dir_nut0)
+				}
+			}
+			if( (dir_nut1 != 0) || (dir_nut1_i != 0) ){
+				if(dir_nut1_i != 0){
+					mod(1,dir_nut1_i)
+					dir_nut1_i = 0;
+				}
+				else{
+					mod(1,dir_nut1)
+				}
+			}
+			if( dir_pressure != 0 ){
+				mod_pressure(dir_pressure);
+			}
+			
+		}, 150);
+		
+	
+		function mod(element,diff){
+			
+			// Random number 
+			randomInt = Math.floor(Math.random() * 5)+1; 
+			
+			// Show current pressure
+			show_pressure = Math.round(current_pressure * 100) / 1000
+			$("#pressure").html(show_pressure + " psi")
+			
+			if(element == 0){
+				zero = zero + diff;
+			}
+			else if (element == 1){
+				span = span + diff;
+			}
+			
+			$("#code").html( Math.round((span+500)*randomInt) + "-" + Math.round((zero+500)*randomInt) + "-" + randomInt )
+			
+			$("#nut_zero").css("transform","rotate("+(5*zero)+"deg)");
+			$("#nut_span").css("transform","rotate("+(5*span)+"deg)");
+			
+			a = (span+48)*.004
+			b = (zero-18)*.15 + a*5.5
+			
+			z = Math.pow(current_pressure,1)
+			
+			intensity = a*z + b
+			if(intensity<0){
+				intensity = 0
+			}
+			
+			show_intensity = Math.round(intensity * 10) / 10
+			
+			
+			$("#current").html(show_intensity + " mA")
+
+			modifying = true;
+
+		}
+		
+		
+		function rotate(current_pos){
+		
+			$("#levier").css("transform","rotate(-"+(5*current_pos/4)+"deg)");
+
+			if (new_pos){
+				if (current_pos>0){
+					current_pressure = ((current_pos/4)*(current_pos/4)/2 + Math.random()*1 - 2)*0.87
+				}
+				else{
+					current_pressure = 0
+				}
+				
+				if(current_pressure<0){
+					current_pressure = 0;
+				}
+			}
+			new_pos = false
+		
+		}
+		
+		
+		var modifying = true;
+		
+		function mod_pressure(diff){
+			
+			modifying = false;
+		
+			setTimeout(function () {
+			
+				current_pos = current_pos + diff;
+				
+				new_pos = true
+				if(current_pos<0){
+					current_pos = 0;
+					new_pos = false;
+				}
+				else if(current_pos>18*4){
+					current_pos = 18*4;
+					new_pos = false;
+				}
+				
+				// Change drag box position
+				$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+				
+				console.log(current_pos);
+				rotate(current_pos);
+				mod(0,0);	
+				
+			}, 55);
+			
+		}
+		
+		
+		setInterval(function () {
+			
+			if(modifying){
+			
+				$("#dragbox").css("left","0px");
+			
+				// Get current position			
+				topv = parseInt($("#dragbox").css("top").replace("px",""));
+				
+				old_pos = current_pos
+				current_pos = parseInt(18*4 - topv/150*18*4)
+				if (current_pos<0){
+					current_pos = 0;
+				}
+				else if (current_pos>(18*4)){
+					current_pos = 18*4;
+				}
+				
+				if(current_pos != old_pos){
+					new_pos = true
+					rotate(current_pos)
+					mod(0,0)
+				}
+				
+			}
+				
+		},50)
+
+		// Change drag box position
+		$("#dragbox").css("top",parseInt( (18*4-current_pos)/(18*4)*150 )+"px")
+
+
+		
+
+	
+	</script>
+
+</html>

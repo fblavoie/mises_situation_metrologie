@@ -1,0 +1,586 @@
+<html charset="utf-8" >
+
+	<head>
+		
+		<script
+		  src="https://code.jquery.com/jquery-3.7.1.min.js"
+		  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		  crossorigin="anonymous">
+		</script>
+		
+		<script		
+			src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.33.1/plotly.min.js">
+		</script>
+		
+		<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+		<script src="./js/scaling_common.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.6.0/math.js"></script>
+
+		<!-- Icons -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/js/all.min.js"></script>
+		
+		
+		
+		<style>
+		
+
+			.btn:hover
+			{
+				cursor:pointer;
+			}
+			
+			.long_button
+			{
+				float:left;
+				margin: 10px 10px 0px 10px;
+				padding: 10px;
+				font-size: 20px;
+				border: solid black 1px;
+				color:white;
+				width:calc(100% - 42px);
+				background: #2A7B9B;
+				background: linear-gradient(180deg,rgba(42, 123, 155, 1) 93%, rgba(237, 221, 83, 1) 100%);
+			}
+
+			.long_button:hover
+			{
+				cursor:pointer;
+			}
+
+			.short_button
+			{
+				float:left;
+				margin: 10px 0px 0px 10px;
+				padding: 10px;
+				font-size: 20px;
+				border: solid black 1px;
+				color:black;
+				background: #ededed;
+				background: linear-gradient(180deg,rgba(237, 237, 237, 1) 93%, rgba(237, 221, 83, 1) 100%);
+			}
+
+			.short_button:hover{
+				cursor:pointer;
+			}
+			
+			.short_button_right
+			{
+				float:right;
+				margin: 10px 10px 0px 0px;
+				padding: 10px;
+				font-size: 20px;
+				border: solid black 1px;
+				color:black;
+				background: #ededed;
+				background: linear-gradient(180deg,rgba(237, 237, 237, 1) 93%, rgba(237, 221, 83, 1) 100%);
+			}
+
+			.short_button_right:hover{
+				cursor:pointer;
+			}
+			
+			.text_box
+			{
+				float:left;
+				margin: 10px 10px 0px 10px;
+				padding: 10px;
+				font-size: 20px;
+				border: solid black 1px;
+				color:black;
+				width:calc(100% - 42px);
+				background: #ffffff;
+				background: linear-gradient(180deg,rgba(255, 255, 255, 1) 93%, rgba(48, 44, 0, 1) 100%);
+			}
+			
+			.input_box
+			{
+				float:left;
+				margin: 10px 10px 0px 10px;
+				padding: 10px;
+				font-size: 20px;
+				border: solid black 1px;
+				color:black;
+				width:calc(100% - 20px);
+				background: #e3fffc;
+			}
+			
+		</style>
+	
+	
+	
+	</head>
+	
+	<body style="margin:0;padding:0;">
+			
+	
+	
+			
+	</body>
+	
+	<script>
+	
+	
+	
+		class HartMenu {
+		
+		
+			constructor( top,left,unit="psi",lrv=0,urv=5, ){
+				
+				// Save parameters
+				this.parameters = {}
+				this.parameters.measure_type = "Pressure"
+				this.parameters.unit = unit
+				this.parameters.lrv = lrv
+				this.parameters.urv = urv
+				
+				this.parameters.real_measure = 0
+				this.parameters.mod_measure = 0
+				this.parameters.mod_mA = 0
+				this.parameters.measure = 0
+				this.parameters.mA = 4
+				
+				
+				// Calibration menu
+				
+				this.parameters.low_mA = 4
+				this.parameters.high_mA = 20
+				
+				this.parameters.low_measure = lrv
+				this.parameters.high_measure = urv
+				
+				
+				//
+				this.parameters.force_analog = false
+				this.parameters.forced_mA = 4
+				
+				
+				// Modifier ------------------------------------ 
+				this.parameters.modifier = {}
+				this.parameters.modifier.measure = {}
+				this.parameters.modifier.measure.bias = 0.05
+				this.parameters.modifier.measure.coef = 0.95
+				
+				this.parameters.modifier.analog = {}
+				this.parameters.modifier.analog.bias = 0.1
+				this.parameters.modifier.analog.coef = 0.99
+				
+				
+				// Calibration ---------------------------------
+				this.parameters.calibration = {}
+				this.parameters.calibration.measure = {}
+				this.parameters.calibration.measure.point0 = [lrv*1,lrv*1]
+				this.parameters.calibration.measure.point1 = [urv*1,urv*1]
+				this.parameters.calibration.measure.bias = 0
+				this.parameters.calibration.measure.coef = 1
+				
+				this.parameters.calibration.analog = {}
+				this.parameters.calibration.analog.point0 = [4,4]
+				this.parameters.calibration.analog.point1 = [20,20]
+				this.parameters.calibration.analog.bias = 0
+				this.parameters.calibration.analog.coef = 1
+				
+				
+				// Initialize calibrations
+				this.refresh_calibration("analog")
+				this.refresh_calibration("measure")
+				
+				
+				// Main
+				this.div = document.createElement('div')
+				this.div.style.cssText = "position:absolute;width:500px;height:300px;background:#878787;top:"+top+";left:"+left;
+				document.body.appendChild(this.div);
+				
+				// Screen
+				this.screen = document.createElement('div')
+				this.screen.style.cssText = "width:480px;height:280px;margin-top:10px;margin-left:10px;background-color:#ebe7b7"
+				this.div.appendChild(this.screen)
+				
+				this.main_menu()
+				
+				parent = this
+				
+				setInterval(function(){
+				
+					// Measure calculation
+					parent.parameters.mod_measure = math.add(math.multiply(parent.parameters.real_measure,parent.parameters.modifier.measure.coef), parent.parameters.modifier.measure.bias)
+					parent.parameters.measure = math.add(math.multiply(parent.parameters.mod_measure,parent.parameters.calibration.measure.coef), parent.parameters.calibration.measure.bias)
+				
+					
+					if(parent.parameters.force_analog){ // Analog signal forced
+						// Reverse calibration
+						var initial_mA = parent.parameters.forced_mA*1.0
+						//parent.parameters.mod_mA = math.divide(math.subtract(initial_mA,parent.parameters.calibration.analog.bias), parent.parameters.modifier.calibration.coef)
+					}
+					else{ // Signal calculation (not forced) calculated from lrv and urv
+						var initial_mA = math.add(math.multiply(math.divide(math.subtract(parent.parameters.measure,parent.parameters.lrv),math.subtract(parent.parameters.urv,parent.parameters.lrv)),16),4)
+					}
+					
+					parent.parameters.mod_mA = math.add(math.multiply(initial_mA,parent.parameters.modifier.analog.coef), parent.parameters.modifier.analog.bias)
+					parent.parameters.mA = math.add(math.multiply(parent.parameters.mod_mA,parent.parameters.calibration.analog.coef), parent.parameters.calibration.analog.bias)
+				
+					// Show values
+					for (const key in parent.parameters) {
+						var selections = parent.div.querySelectorAll(".view_"+key);
+						for (const el of selections) {
+						    el.innerHTML = (parent.parameters[key])
+						}	
+					}
+				}, 50)
+
+
+
+				
+				
+			}
+			
+			
+			
+			// Public functions ===========================================
+			
+			update_real_value(new_value){
+				this.parameters.real_measure = new_value
+			}
+			
+			get_output(){
+				var result = this.parameters.mA
+				if(result < 3.625){
+					result  = 3.625
+				}
+				if(result > 20.375){
+					result = 20.375
+				}
+				return { "measured_mA": result}
+			}
+			
+			
+			
+			// Refresh calibrations =======================================
+			refresh_calibration(cal_type){
+				var x1 = this.parameters.calibration[cal_type].point0[0]
+				var y1 = this.parameters.calibration[cal_type].point0[1]
+				var x2 = this.parameters.calibration[cal_type].point1[0]
+				var y2 = this.parameters.calibration[cal_type].point1[1]
+				this.parameters.calibration[cal_type].coef = math.divide(math.subtract(y2,y1),math.subtract(x2,x1))
+				this.parameters.calibration[cal_type].bias = y1 - math.multiply(this.parameters.calibration[cal_type].coef,x1)
+			}
+			
+			
+			
+			
+			
+			
+			// Button actions =============================================
+			
+			change_screen_button(new_button){
+				
+				parent = this
+				new_button.addEventListener("click", function (e) {
+				  console.log(this.getAttribute("destination"))
+				  eval("parent."+this.getAttribute("destination")+"()")
+				});
+				
+				return new_button
+				
+			}
+			
+			cancel_button(new_button){
+			
+				new_button.addEventListener("click", function (e) {
+					parent.current_input.input.value = parent.current_input.original_value
+				});
+				
+				return new_button
+			
+			}
+			
+			confirm_button(new_button,btn_type=0){
+
+				new_button.addEventListener("click", function (e) {
+					//try {
+					
+						var new_value = parseFloat(parent.current_input.input.value.replace(",","."))*1.0
+						parent.parameters[parent.current_input.parameter] = new_value
+						parent.current_input.message_box.innerHTML = "VALUE CHANGED"
+						
+						// Special cases ------------------------------------------------------------------------------------
+						
+						// Analog calibration cases -------------------------------------------------------------------------
+						if( (btn_type == 101) ){
+							console.log(101)
+							parent.parameters.calibration.analog.point0 = [ math.divide(math.subtract(parent.parameters.low_mA*1,parent.parameters.calibration.analog.bias),parent.parameters.calibration.analog.coef) , parent.parameters.forced_mA*1,];
+							parent.refresh_calibration("analog")
+							parent.a4mA_menu2();
+						}
+						else if( (btn_type == 102) ){
+							console.log(102)
+							parent.parameters.calibration.analog.point1 = [ math.divide(math.subtract(parent.parameters.high_mA*1,parent.parameters.calibration.analog.bias),parent.parameters.calibration.analog.coef) , parent.parameters.forced_mA*1,    ];
+							parent.refresh_calibration("analog")
+							parent.a20mA_menu2();
+						}
+						
+						// Measure calibration cases
+						if( (btn_type == 111) ){
+							console.log(111)
+							parent.parameters.calibration.measure.point0 = [ parent.parameters.mod_measure*1, parent.parameters.low_measure*1 ];
+							parent.refresh_calibration("measure")
+						}
+						else if( (btn_type == 112) ){
+							console.log(112)
+							parent.parameters.calibration.measure.point1 = [ parent.parameters.mod_measure*1, parent.parameters.high_measure*1 ];
+							parent.refresh_calibration("measure")
+						}
+						
+					//}
+					//catch(error){
+					//	parent.current_input.message_box.innerHTML = "ERROR"
+					//}
+				});
+				
+				return new_button
+				
+			}
+			
+			
+			
+			create_new_button(btn_class,text,destination="",btn_type=0){
+				var new_button = document.createElement('div')
+				new_button.classList.add(btn_class)
+				new_button.innerHTML = text
+				new_button.setAttribute("destination",destination)
+				
+				if(btn_type == 0){
+					new_button = this.change_screen_button(new_button)
+				}
+				else if( (btn_type >= 50) && (btn_type < 100) ){ // Cancel --------
+					new_button = this.cancel_button(new_button,btn_type)
+				}
+				else if( (btn_type >= 100) && (btn_type < 150) ){ // Confirm ------
+					new_button = this.confirm_button(new_button,btn_type)
+				}
+				
+				this.menu.appendChild(new_button)
+				
+				return new_button
+			}
+			
+			
+			
+			
+			// Display elements ========================================================
+			
+			long_button(text,destination,btn_type=0){
+				return this.create_new_button("long_button",text,destination,btn_type)
+			}
+			
+			short_button(text,destination,btn_type=0){
+				return this.create_new_button("short_button",text,destination,btn_type)
+			}
+			
+			short_button_right(text,destination,btn_type=0){
+				return this.create_new_button("short_button_right",text,destination,btn_type)
+			}
+			
+			text_box(text){
+				return this.create_new_button("text_box",text,"",1)
+			}
+			
+			input_box(original_value){
+				this.current_input = {}
+				this.current_input.parameter = original_value
+				this.current_input.original_value = this.parameters[original_value]
+				
+				this.current_input.input = document.createElement('input')
+				this.current_input.input.classList.add("input_box")
+				this.current_input.input.value = this.parameters[ original_value ]
+				
+				this.menu.appendChild(this.current_input.input)
+				
+				return this.current_input.input
+			}
+			
+			
+			
+			
+		
+			new_menu_page(){
+				this.parameters.force_analog = false // If analog forced, remove it
+				this.screen.innerHTML = ''
+				this.menu = document.createElement('div')
+				this.screen.appendChild(this.menu)
+			}
+
+
+
+			// Pages ================================================================
+			
+			main_menu(){
+				this.new_menu_page()
+				this.text_box("Current measure: <span class='view_measure'></span> <span class='view_unit'></span>")
+				this.long_button("LRV: <span class='view_lrv'></span> <span class='view_unit'></span>","lrv_menu")
+				this.long_button("URV: <span class='view_urv'></span> <span class='view_unit'></span>","urv_menu")
+
+				this.long_button("Calibration","calibration_menu")
+			}
+			
+			lrv_menu(){
+				this.new_menu_page()
+				var message_box = this.text_box("Set new LRV below")
+				var input_box = this.input_box("lrv")
+				
+				this.current_input.message_box = message_box
+				
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","main_menu")
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","confirm",100)
+				this.short_button_right("<i class='fa-solid fa-x fa-lg'></i>","cancel",50)
+			}
+			
+			urv_menu(){
+				this.new_menu_page()
+				var message_box = this.text_box("Set new URV below")
+				var input_box = this.input_box("urv")
+				
+				this.current_input.message_box = message_box
+				
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","main_menu")
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","confirm",100)
+				this.short_button_right("<i class='fa-solid fa-x fa-lg'></i>","cancel",50)
+			}
+			
+			calibration_menu(){
+				this.new_menu_page()
+				this.long_button("<span class='view_measure_type'></span> calibration","measure_calibration_menu")
+				this.long_button("Analog calibration","analog_calibration_menu")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","main_menu")
+			}
+			
+			analog_calibration_menu(){
+				this.new_menu_page()
+				this.long_button("4 mA","a4mA_menu")
+				this.long_button("20 mA","a20mA_menu")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","calibration_menu")
+			}
+			
+			a4mA_menu(){
+				this.new_menu_page()
+				this.text_box("The transmitter is sending 4 mA")
+				
+				// FORCE mA
+				this.parameters.force_analog = true
+				this.parameters.forced_mA = 4
+				
+				this.parameters.low_mA = 4
+				
+				var message_box = this.text_box("From measurement, correct below if necessary")
+				var input_box = this.input_box("low_mA")
+				
+				this.current_input.message_box = message_box
+				
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","analog_calibration_menu")
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","confirm",101)
+				this.short_button_right("<i class='fa-solid fa-x fa-lg'></i>","cancel",50)
+			}
+			
+			a4mA_menu2(){
+				this.new_menu_page()
+				
+				// FORCE mA
+				this.parameters.force_analog = true
+				this.parameters.forced_mA = 4
+				
+				this.text_box("New calibration point saved")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","a4mA_menu")
+			}
+			
+			a20mA_menu(){
+				this.new_menu_page()
+				this.text_box("The transmitter is sending 20 mA")
+				
+				// FORCE mA
+				this.parameters.force_analog = true
+				this.parameters.forced_mA = 20
+				
+				this.parameters.high_mA = 20
+				
+				var message_box = this.text_box("From measurement, correct below if necessary")
+				var input_box = this.input_box("high_mA")
+				
+				this.current_input.message_box = message_box
+				
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","analog_calibration_menu")
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","confirm",102)
+				this.short_button_right("<i class='fa-solid fa-x fa-lg'></i>","cancel",50)
+			}
+			
+			a20mA_menu2(){
+				this.new_menu_page()
+				
+				// FORCE mA
+				this.parameters.force_analog = true
+				this.parameters.forced_mA = 20
+				
+				this.text_box("New calibration point saved")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","a20mA_menu")
+			}
+			
+			measure_calibration_menu(){
+				this.new_menu_page()
+				this.long_button("Upper","upper_menu")
+				this.long_button("Lower","lower_menu")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","calibration_menu")
+			}
+			
+			upper_menu(){
+				this.new_menu_page()
+				var message_box = this.text_box("Apply high "+this.parameters.measure_type.toLowerCase() + ".")
+				this.text_box("Current reading: <span class='view_measure'></span> <span class='view_unit'></span>.")
+				this.text_box("Confirm when "+this.parameters.measure_type.toLowerCase()+" is stabilized.")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","measure_calibration_menu")
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","upper_menu2",0)
+			}
+			
+			upper_menu2(){
+				this.new_menu_page()
+				this.text_box("Current reading: <span class='view_measure'></span> <span class='view_unit'></span>.")
+				var message_box = this.text_box("If necessary, correct below.")
+				this.parameters.high_measure = this.parameters.measure
+				var input_box = this.input_box("high_measure")
+				this.current_input.message_box = message_box
+
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","upper_menu")				
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","confirm",112)
+			}
+			
+			lower_menu(){
+				this.new_menu_page()
+				var message_box = this.text_box("Apply low "+this.parameters.measure_type.toLowerCase() + ".")
+				this.text_box("Current reading: <span class='view_measure'></span> <span class='view_unit'></span>.")
+				this.text_box("Confirm when "+this.parameters.measure_type.toLowerCase()+" is stabilized.")
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","measure_calibration_menu")
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","lower_menu2",0)
+			}
+			
+			lower_menu2(){
+				this.new_menu_page()
+				this.text_box("Current reading: <span class='view_measure'></span> <span class='view_unit'></span>.")
+				var message_box = this.text_box("If necessary, correct below.")
+				this.parameters.low_measure = this.parameters.measure
+				var input_box = this.input_box("low_measure")
+				this.current_input.message_box = message_box
+
+				this.short_button("<i class='fa-solid fa-left-long fa-lg'></i>","lower_menu")					
+				this.short_button_right("<i class='fa-solid fa-check fa-lg'></i>","confirm",111)
+			}
+			
+		}
+		
+		
+		menu = new HartMenu(100,100,"psi")
+		
+		
+		
+		
+	</script>
+
+</html>

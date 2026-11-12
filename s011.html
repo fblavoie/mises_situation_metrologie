@@ -119,6 +119,9 @@
 			
 			show_intensity = Math.round(intensity * 10) / 10
 			
+			if(show_intensity>20.5){
+				show_intensity = 20.5
+			}
 			
 			$("#current").html(show_intensity + " mA")
 
